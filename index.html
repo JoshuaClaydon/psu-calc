@@ -210,6 +210,14 @@
         </table>
       </div>
 
+      <!-- Power breakdown chart — hidden until first calculation -->
+      <div id="chart-section" class="section hidden">
+        <div class="section-label">Power breakdown</div>
+        <div class="chart-wrap">
+          <canvas id="power-chart"></canvas>
+        </div>
+      </div>
+
       <!-- Headroom explainer — shown by calculator.js -->
       <div id="headroom-explainer" class="headroom-explainer hidden">
         <h3>Why headroom matters</h3>
@@ -313,6 +321,7 @@
 
 </div><!-- /page -->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script src="/js/calculator.js"></script>
 
 <!-- ─── UI controller ─────────────────────────────────────────────────────────
@@ -333,14 +342,32 @@
   }
 
   function cpuSeries(text) {
-    if (text.includes('Core i9')) return 'Core i9';
-    if (text.includes('Core i7')) return 'Core i7';
-    if (text.includes('Core i5')) return 'Core i5';
-    if (text.includes('Core i3')) return 'Core i3';
+    // AMD — no generation suffix needed (series number encodes the gen)
     if (text.includes('Ryzen 9')) return 'Ryzen 9';
     if (text.includes('Ryzen 7')) return 'Ryzen 7';
     if (text.includes('Ryzen 5')) return 'Ryzen 5';
-    return 'Other';
+
+    // Intel — derive tier and generation from model number
+    var tierMatch  = text.match(/Core (i\d)/);
+    var modelMatch = text.match(/i\d-(\d{4,5})/);
+    if (!tierMatch || !modelMatch) return 'Other';
+
+    var tier = tierMatch[1];                          // e.g. "i7"
+    var num  = parseInt(modelMatch[1], 10);           // e.g. 12700
+
+    var gen;
+    if      (num >= 14000) gen = '14th Gen';
+    else if (num >= 13000) gen = '13th Gen';
+    else if (num >= 12000) gen = '12th Gen';
+    else if (num >= 11000) gen = '11th Gen';
+    else if (num >= 10000) gen = '10th Gen';
+    else if (num >= 9000)  gen = '9th Gen';
+    else if (num >= 8000)  gen = '8th Gen';
+    else if (num >= 7000)  gen = '7th Gen';
+    else if (num >= 6000)  gen = '6th Gen';
+    else                   gen = 'Other';
+
+    return 'Core ' + tier + ' \u2014 ' + gen;   // e.g. "Core i7 — 12th Gen"
   }
 
   function gpuBrand(text) {
@@ -539,6 +566,161 @@
     });
     obs.observe(cpuSel, { childList: true });
   }
+
+}());
+
+// ─── Power breakdown chart ────────────────────────────────────────────────────
+(function () {
+  'use strict';
+
+  var chartSection  = document.getElementById('chart-section');
+  var canvas        = document.getElementById('power-chart');
+  var breakdownBody = document.getElementById('breakdown-body');
+  var chartInstance = null;
+  var pending       = false;
+
+  if (!chartSection || !canvas || !breakdownBody) return;
+
+  // ── Read current result data from the DOM ──────────────────────────────
+  function parseData() {
+    var totalEl = document.getElementById('total-draw');
+    var recEl   = document.getElementById('recommended-wattage');
+    if (!totalEl || !recEl) return null;
+
+    var totalDraw   = parseInt(totalEl.textContent, 10);
+    var recommended = parseInt(recEl.textContent, 10);
+    if (isNaN(totalDraw) || isNaN(recommended) || totalDraw <= 0) return null;
+
+    var labels = [];
+    var values = [];
+
+    // Parse each component row (skip totals row)
+    breakdownBody.querySelectorAll('tr:not(.totals-row)').forEach(function (row) {
+      var cells = row.querySelectorAll('td');
+      if (cells.length < 2) return;
+      var w = parseInt(cells[1].textContent, 10);
+      if (!isNaN(w) && w > 0) {
+        labels.push(cells[0].textContent.trim());
+        values.push(w);
+      }
+    });
+
+    if (labels.length === 0) return null;
+
+    // Append headroom bar
+    var headroom = recommended - totalDraw;
+    if (headroom > 0) {
+      labels.push('Headroom');
+      values.push(headroom);
+    }
+
+    return { labels: labels, values: values, max: recommended };
+  }
+
+  // ── Colour bars by relative contribution (excluding headroom) ─────────
+  function makeColors(labels, values) {
+    var compMax = 0;
+    values.forEach(function (v, i) {
+      if (labels[i] !== 'Headroom' && v > compMax) compMax = v;
+    });
+    return values.map(function (v, i) {
+      if (labels[i] === 'Headroom') return '#2a2a2a';
+      var ratio = compMax > 0 ? v / compMax : 0;
+      if (ratio >= 0.6)  return '#3b82f6';
+      if (ratio >= 0.25) return '#6366f1';
+      return '#8b8cf8';
+    });
+  }
+
+  // ── Render or update chart ─────────────────────────────────────────────
+  function renderChart() {
+    var data = parseData();
+    if (!data) return;
+
+    chartSection.classList.remove('hidden');
+
+    var colors = makeColors(data.labels, data.values);
+
+    if (chartInstance) {
+      chartInstance.data.labels                        = data.labels;
+      chartInstance.data.datasets[0].data             = data.values;
+      chartInstance.data.datasets[0].backgroundColor  = colors;
+      chartInstance.options.scales.x.max              = data.max;
+      chartInstance.update('active');
+      return;
+    }
+
+    chartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data: data.values,
+          backgroundColor: colors,
+          borderWidth: 0,
+          borderRadius: 3,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 380, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1a1a',
+            borderColor: '#2a2a2a',
+            borderWidth: 1,
+            titleColor: '#e8e8e8',
+            titleFont: { size: 12 },
+            bodyColor: '#b0b0b0',
+            bodyFont: { size: 12 },
+            padding: 10,
+            callbacks: {
+              label: function (ctx) { return '  ' + ctx.parsed.x + 'W'; }
+            }
+          }
+        },
+        scales: {
+          x: {
+            max: data.max,
+            grid: { color: '#222222' },
+            border: { color: '#2a2a2a', dash: [0] },
+            ticks: {
+              color: '#555',
+              font: { size: 11 },
+              callback: function (v) { return v + 'W'; },
+              maxTicksLimit: 6,
+            }
+          },
+          y: {
+            grid: { display: false },
+            border: { color: '#2a2a2a' },
+            ticks: {
+              color: '#b0b0b0',
+              font: { size: 12 },
+              padding: 4,
+            }
+          }
+        },
+        layout: { padding: { right: 4 } }
+      }
+    });
+  }
+
+  // ── Observe breakdown-body for DOM changes (triggered by calculator.js) ─
+  var obs = new MutationObserver(function () {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(function () {
+      pending = false;
+      renderChart();
+    });
+  });
+
+  obs.observe(breakdownBody, { childList: true });
 
 }());
 </script>

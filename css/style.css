@@ -545,8 +545,17 @@ tbody .totals-row td {
 .footer a { color: var(--t3); }
 .footer a:hover { color: var(--t2); text-decoration: none; }
 
+/* ─── Power breakdown chart ──────────────────────────────────────────────────── */
+.chart-wrap {
+  position: relative;
+  height: 240px;   /* scales with number of bars via Chart.js responsive mode */
+}
+
 /* ─── Guide/article page ─────────────────────────────────────────────────────── */
-.article-body { max-width: 640px; }
+.article-body {
+  max-width: 740px;
+  margin: 0 auto;
+}
 
 .article-body h2 {
   font-size: 16px;
