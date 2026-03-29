@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PC Power Supply Calculator — Find Your Ideal PSU Wattage | PSU Calc</title>
+  <meta name="description" content="Free PC PSU wattage calculator. Select your CPU, GPU, fans, RAM and storage to instantly find the right power supply size for your build. Updated for RTX 5090, RX 7900 XTX, Intel 14th Gen and AMD Ryzen 9000." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://psucalc.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="PC Power Supply Calculator — Find Your Ideal PSU Wattage" />
+  <meta property="og:description" content="Instantly calculate the right PSU wattage for your PC build. Covers Intel, AMD, NVIDIA and Radeon components." />
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://psucalc.com/" />
+  <meta property="og:image"       content="https://psucalc.com/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="PC Power Supply Calculator | PSU Calc" />
+  <meta name="twitter:description" content="Find the right PSU wattage for your PC build in seconds." />
+
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- JSON-LD: FAQPage structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much PSU wattage do I need for gaming?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most mid-range gaming builds (e.g. Ryzen 5 / Core i5 + RTX 4070) need 650–750W. High-end builds with RTX 4090 or RX 7900 XTX typically need 850–1000W. Always add at least 20% headroom above your system's peak draw."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does PSU headroom mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Headroom is the unused capacity between your system's peak power draw and your PSU's rated maximum. 20–30% headroom keeps the PSU running in its most efficient range (typically 50–80% load), reduces heat, and extends its lifespan."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is an 80+ Gold PSU worth it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. An 80+ Gold PSU is at least 87% efficient at 50% load, wasting less power as heat. For a 24/7 gaming PC the energy savings over a few years often offset the small price premium over 80+ Bronze."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can a PSU be too powerful for my PC?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A PSU only delivers the wattage your components actually draw, so an oversized PSU won't damage your hardware. However, very oversized PSUs (running below 20% load) can run less efficiently. Sticking within 20–50% headroom is ideal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What PSU do I need for an RTX 4090?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "NVIDIA recommends an 850W PSU for the RTX 4090. If paired with a high-TDP CPU like the Core i9-14900K or Ryzen 9 7950X, step up to 1000W or 1200W to maintain safe headroom."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ============================================================
+       GOOGLE ADSENSE — Paste your AdSense <script> tag here:
+       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+       Replace XXXXXXXXXXXXXXXX with your Publisher ID.
+       ============================================================ -->
+</head>
+<body>
+
+<div class="site-wrapper">
+
+  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="logo">⚡ PSU Calc</div>
+    <nav>
+      <a href="/">Calculator</a> &nbsp;·&nbsp;
+      <a href="/guides/">PSU Guide</a>
+    </nav>
+  </header>
+
+  <!-- ─── Ad: Banner below header ─────────────────────────────────────────── -->
+  <!--
+    ADSENSE AD UNIT — Top banner (728×90 leaderboard on desktop, responsive on mobile)
+    Replace the comment below with your AdSense ad unit code.
+    Recommended ad format: Responsive / Auto
+  -->
+  <div class="ad-banner ad-banner-top" aria-hidden="true">
+    <!-- AdSense banner ad unit — place your <ins class="adsbygoogle"> code here -->
+    Advertisement
+  </div>
+
+  <!-- ─── Page hero ────────────────────────────────────────────────────────── -->
+  <div class="page-hero">
+    <h1>PC Power Supply Calculator — Find Your Ideal PSU Wattage</h1>
+    <p>Select your components below to instantly calculate the recommended PSU size for your build.</p>
+  </div>
+
+  <!-- ─── Main content grid (calculator + sidebar) ─────────────────────────── -->
+  <div class="content-grid" style="margin-top:1.25rem;">
+
+    <!-- ── Left column: calculator ── -->
+    <main>
+
+      <!-- CPU / GPU selection -->
+      <div class="card">
+        <h2>Processor &amp; Graphics Card</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="cpu-select">CPU</label>
+            <select id="cpu-select">
+              <option value="" disabled selected>Loading CPUs…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="gpu-select">GPU</label>
+            <select id="gpu-select">
+              <option value="" disabled selected>Loading GPUs…</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peripherals -->
+      <div class="card" style="margin-top:1rem;">
+        <h2>Other Components</h2>
+        <div class="peripherals-grid">
+          <div class="peripheral-field">
+            <label for="fans">Case Fans</label>
+            <input type="number" id="fans" min="0" max="20" value="3" />
+            <span class="unit-hint">3W each</span>
+          </div>
+          <div class="peripheral-field">
+            <label for="ram">RAM Sticks</label>
+            <input type="number" id="ram" min="0" max="8" value="2" />
+            <span class="unit-hint">5W each</span>
+          </div>
+          <div class="peripheral-field">
+            <label for="nvme">NVMe SSDs</label>
+            <input type="number" id="nvme" min="0" max="10" value="1" />
+            <span class="unit-hint">10W each</span>
+          </div>
+          <div class="peripheral-field">
+            <label for="hdd">HDDs</label>
+            <input type="number" id="hdd" min="0" max="10" value="0" />
+            <span class="unit-hint">10W each</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div id="result-card" class="result-card hidden">
+        <div class="result-label">Recommended PSU</div>
+        <div class="result-wattage"><span id="recommended-wattage">—</span></div>
+
+        <div class="result-meta">
+          <div class="meta-item">
+            <div class="meta-value" id="total-draw">—</div>
+            <div class="meta-label">Estimated draw</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-value" id="draw-headroom">—</div>
+            <div class="meta-label">With 20% headroom</div>
+          </div>
+          <div class="meta-item">
+            <div id="headroom-badge" class="headroom-badge headroom-good">
+              <span id="headroom-pct">—</span> headroom
+            </div>
+            <div class="meta-label" style="margin-top:.3rem;">On chosen PSU</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Ad: After result ─────────────────────────────────────────────── -->
+      <!--
+        ADSENSE AD UNIT — After result (responsive)
+        Place your <ins class="adsbygoogle"> code inside this div.
+      -->
+      <div class="ad-banner ad-banner-mid" aria-hidden="true">
+        <!-- AdSense mid-page ad unit — place your <ins class="adsbygoogle"> code here -->
+        Advertisement
+      </div>
+
+      <!-- Component breakdown table -->
+      <div id="breakdown-section" class="breakdown-section hidden card">
+        <h2>Power Breakdown</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th class="text-right">Watts</th>
+              <th class="text-right">Share</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="breakdown-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Why headroom matters -->
+      <div id="headroom-explainer" class="headroom-explainer hidden">
+        <h3>Why does headroom matter?</h3>
+        <p>
+          PSUs are most efficient when running at 50–80% of their rated capacity. The 80 PLUS certification
+          tests efficiency at 20%, 50%, and 100% load — most units peak at ~50% load.
+        </p>
+        <p>
+          Running a PSU at 90%+ load for extended periods increases heat, reduces lifespan, and can cause
+          instability during power spikes (especially GPU boost transients). A 20% buffer protects against this.
+        </p>
+        <p>
+          For future-proofing: if you plan to overclock, add more drives, or upgrade your GPU within
+          a year, sizing up one tier now is cheaper than buying a new PSU later.
+        </p>
+      </div>
+
+    </main>
+
+    <!-- ── Right column: sidebar ── -->
+    <aside class="sidebar">
+
+      <!-- ─── Ad: Sidebar ─────────────────────────────────────────────────── -->
+      <!--
+        ADSENSE AD UNIT — Sidebar (300×250 medium rectangle or 160×600 wide skyscraper)
+        Place your <ins class="adsbygoogle"> code inside this div.
+        This unit is only visible on desktop (≥900px) via the CSS grid layout.
+      -->
+      <div class="ad-banner ad-sidebar" aria-hidden="true">
+        <!-- AdSense sidebar ad unit — place your <ins class="adsbygoogle"> code here -->
+        Advertisement
+      </div>
+
+      <div class="sidebar-card">
+        <div class="tip-badge">Quick Tips</div>
+        <h3>Choosing a PSU</h3>
+        <ul>
+          <li>Always buy from a reputable brand (Seasonic, Corsair, EVGA, be quiet!, Fractal)</li>
+          <li>Aim for 80+ Gold efficiency or higher</li>
+          <li>Fully modular cables reduce clutter</li>
+          <li>Check connector count matches your GPU (RTX 4090 needs 16-pin or 3× 8-pin adapters)</li>
+          <li>ATX 3.0 PSUs handle GPU power spikes natively</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="tip-badge">More Tools</div>
+        <h3>Coming soon</h3>
+        <ul>
+          <li>GPU Bottleneck Checker</li>
+          <li>RAM Speed Impact Calculator</li>
+          <li>PC Build Budget Planner</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>About this calculator</h3>
+        <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6;">
+          TDP values reflect manufacturers' rated maximum power draw (PL2 / peak board power).
+          Real-world draw may vary by ±10–15%. We recommend adding one PSU tier if you overclock.
+        </p>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-top:.5rem;">
+          <a href="/guides/">Read our full PSU guide →</a>
+        </p>
+      </div>
+
+    </aside>
+  </div><!-- /content-grid -->
+
+  <!-- ─── Footer ───────────────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <span>© 2025 PSU Calc. For informational purposes only.</span>
+    <nav>
+      <a href="/">Calculator</a> &nbsp;·&nbsp;
+      <a href="/guides/">PSU Guide</a>
+    </nav>
+  </footer>
+
+</div><!-- /site-wrapper -->
+
+<script src="/js/calculator.js"></script>
+</body>
+</html>
