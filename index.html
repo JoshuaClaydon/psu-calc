@@ -81,122 +81,122 @@
 </head>
 <body>
 
-<div class="site-wrapper">
+<div class="page">
 
   <!-- ─── Header ──────────────────────────────────────────────────────────── -->
-  <header class="site-header">
-    <div class="logo">⚡ PSU Calc</div>
-    <nav>
-      <a href="/">Calculator</a> &nbsp;·&nbsp;
-      <a href="/guides/">PSU Guide</a>
+  <header class="header">
+    <a class="logo" href="/">PSU Calc</a>
+    <nav class="nav">
+      <a href="/">Calculator</a>
+      <a href="/guides/">Guide</a>
     </nav>
   </header>
 
-  <!-- ─── Ad: Banner below header ─────────────────────────────────────────── -->
+  <!-- ─── Ad: Top banner ───────────────────────────────────────────────────── -->
   <!--
-    ADSENSE AD UNIT — Top banner (728×90 leaderboard on desktop, responsive on mobile)
-    Replace the comment below with your AdSense ad unit code.
-    Recommended ad format: Responsive / Auto
+    ADSENSE AD UNIT — Top banner (728×90 leaderboard / responsive)
+    Replace the inner comment with your <ins class="adsbygoogle"> code.
   -->
   <div class="ad-banner ad-banner-top" aria-hidden="true">
     <!-- AdSense banner ad unit — place your <ins class="adsbygoogle"> code here -->
     Advertisement
   </div>
 
-  <!-- ─── Page hero ────────────────────────────────────────────────────────── -->
-  <div class="page-hero">
+  <!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
+  <div class="hero">
     <h1>PC Power Supply Calculator — Find Your Ideal PSU Wattage</h1>
-    <p>Select your components below to instantly calculate the recommended PSU size for your build.</p>
+    <p>Pick your CPU and GPU below to get an instant PSU recommendation with full component breakdown.</p>
   </div>
 
-  <!-- ─── Main content grid (calculator + sidebar) ─────────────────────────── -->
-  <div class="content-grid" style="margin-top:1.25rem;">
+  <!-- ─── Main layout ──────────────────────────────────────────────────────── -->
+  <div class="layout">
 
-    <!-- ── Left column: calculator ── -->
-    <main>
+    <!-- ── Left column: selectors ── -->
+    <div class="layout-main">
 
-      <!-- CPU / GPU selection -->
-      <div class="card">
-        <h2>Processor &amp; Graphics Card</h2>
-        <div class="form-grid">
-          <div class="field">
-            <label for="cpu-select">CPU</label>
-            <select id="cpu-select">
-              <option value="" disabled selected>Loading CPUs…</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="gpu-select">GPU</label>
-            <select id="gpu-select">
-              <option value="" disabled selected>Loading GPUs…</option>
-            </select>
-          </div>
+      <!-- CPU selector -->
+      <section class="section">
+        <div class="section-label">CPU</div>
+        <div class="pill-row" id="cpu-brand-row">
+          <!-- Brand buttons injected by ui.js -->
         </div>
-      </div>
-
-      <!-- Peripherals -->
-      <div class="card" style="margin-top:1rem;">
-        <h2>Other Components</h2>
-        <div class="peripherals-grid">
-          <div class="peripheral-field">
-            <label for="fans">Case Fans</label>
-            <input type="number" id="fans" min="0" max="20" value="3" />
-            <span class="unit-hint">3W each</span>
-          </div>
-          <div class="peripheral-field">
-            <label for="ram">RAM Sticks</label>
-            <input type="number" id="ram" min="0" max="8" value="2" />
-            <span class="unit-hint">5W each</span>
-          </div>
-          <div class="peripheral-field">
-            <label for="nvme">NVMe SSDs</label>
-            <input type="number" id="nvme" min="0" max="10" value="1" />
-            <span class="unit-hint">10W each</span>
-          </div>
-          <div class="peripheral-field">
-            <label for="hdd">HDDs</label>
-            <input type="number" id="hdd" min="0" max="10" value="0" />
-            <span class="unit-hint">10W each</span>
-          </div>
+        <div class="pill-row hidden" id="cpu-series-row">
+          <!-- Series buttons injected by ui.js -->
         </div>
-      </div>
+        <select id="cpu-select" class="model-select">
+          <option value="" disabled selected>Loading CPUs…</option>
+        </select>
+      </section>
 
-      <!-- Result card -->
-      <div id="result-card" class="result-card hidden">
-        <div class="result-label">Recommended PSU</div>
-        <div class="result-wattage"><span id="recommended-wattage">—</span></div>
+      <!-- GPU selector -->
+      <section class="section">
+        <div class="section-label">GPU</div>
+        <div class="pill-row" id="gpu-brand-row">
+          <!-- Brand buttons injected by ui.js -->
+        </div>
+        <div class="pill-row hidden" id="gpu-series-row">
+          <!-- Series buttons injected by ui.js -->
+        </div>
+        <select id="gpu-select" class="model-select">
+          <option value="" disabled selected>Loading GPUs…</option>
+        </select>
+      </section>
 
-        <div class="result-meta">
-          <div class="meta-item">
-            <div class="meta-value" id="total-draw">—</div>
-            <div class="meta-label">Estimated draw</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-value" id="draw-headroom">—</div>
-            <div class="meta-label">With 20% headroom</div>
-          </div>
-          <div class="meta-item">
-            <div id="headroom-badge" class="headroom-badge headroom-good">
-              <span id="headroom-pct">—</span> headroom
+      <!-- Other components -->
+      <section class="section">
+        <div class="section-label">Other Components</div>
+        <div class="components-grid">
+
+          <div class="component-item">
+            <div class="component-label">Case Fans</div>
+            <div class="stepper" data-input="fans">
+              <button type="button" class="stepper-btn stepper-minus" aria-label="Fewer fans">−</button>
+              <span class="stepper-val">3</span>
+              <button type="button" class="stepper-btn stepper-plus" aria-label="More fans">+</button>
             </div>
-            <div class="meta-label" style="margin-top:.3rem;">On chosen PSU</div>
+            <div class="component-hint">3W each</div>
+            <input type="number" id="fans" class="stepper-input" min="0" max="20" value="3" />
           </div>
+
+          <div class="component-item">
+            <div class="component-label">RAM Sticks</div>
+            <div class="stepper" data-input="ram">
+              <button type="button" class="stepper-btn stepper-minus" aria-label="Less RAM">−</button>
+              <span class="stepper-val">2</span>
+              <button type="button" class="stepper-btn stepper-plus" aria-label="More RAM">+</button>
+            </div>
+            <div class="component-hint">5W each</div>
+            <input type="number" id="ram" class="stepper-input" min="0" max="8" value="2" />
+          </div>
+
+          <div class="component-item">
+            <div class="component-label">NVMe SSDs</div>
+            <div class="stepper" data-input="nvme">
+              <button type="button" class="stepper-btn stepper-minus" aria-label="Fewer NVMe">−</button>
+              <span class="stepper-val">1</span>
+              <button type="button" class="stepper-btn stepper-plus" aria-label="More NVMe">+</button>
+            </div>
+            <div class="component-hint">10W each</div>
+            <input type="number" id="nvme" class="stepper-input" min="0" max="10" value="1" />
+          </div>
+
+          <div class="component-item">
+            <div class="component-label">HDDs</div>
+            <div class="stepper" data-input="hdd">
+              <button type="button" class="stepper-btn stepper-minus" aria-label="Fewer HDDs">−</button>
+              <span class="stepper-val">0</span>
+              <button type="button" class="stepper-btn stepper-plus" aria-label="More HDDs">+</button>
+            </div>
+            <div class="component-hint">10W each</div>
+            <input type="number" id="hdd" class="stepper-input" min="0" max="10" value="0" />
+          </div>
+
         </div>
-      </div>
+      </section>
 
-      <!-- ─── Ad: After result ─────────────────────────────────────────────── -->
-      <!--
-        ADSENSE AD UNIT — After result (responsive)
-        Place your <ins class="adsbygoogle"> code inside this div.
-      -->
-      <div class="ad-banner ad-banner-mid" aria-hidden="true">
-        <!-- AdSense mid-page ad unit — place your <ins class="adsbygoogle"> code here -->
-        Advertisement
-      </div>
-
-      <!-- Component breakdown table -->
-      <div id="breakdown-section" class="breakdown-section hidden card">
-        <h2>Power Breakdown</h2>
+      <!-- Breakdown table — shown by calculator.js after first calculation -->
+      <div id="breakdown-section" class="section breakdown-section hidden">
+        <div class="section-label">Power Breakdown</div>
         <table>
           <thead>
             <tr>
@@ -210,33 +210,56 @@
         </table>
       </div>
 
-      <!-- Why headroom matters -->
+      <!-- Headroom explainer — shown by calculator.js -->
       <div id="headroom-explainer" class="headroom-explainer hidden">
-        <h3>Why does headroom matter?</h3>
+        <h3>Why headroom matters</h3>
         <p>
-          PSUs are most efficient when running at 50–80% of their rated capacity. The 80 PLUS certification
-          tests efficiency at 20%, 50%, and 100% load — most units peak at ~50% load.
+          PSUs run most efficiently at 50–80% of rated capacity. The 80 PLUS certification
+          tests exactly this — peak efficiency is rarely at full load.
         </p>
         <p>
-          Running a PSU at 90%+ load for extended periods increases heat, reduces lifespan, and can cause
-          instability during power spikes (especially GPU boost transients). A 20% buffer protects against this.
+          Running above 90% load for extended periods increases heat, shortens component
+          lifespan, and leaves no buffer for GPU power spikes during boost. A 20% margin
+          keeps you in the safe zone.
         </p>
         <p>
-          For future-proofing: if you plan to overclock, add more drives, or upgrade your GPU within
-          a year, sizing up one tier now is cheaper than buying a new PSU later.
+          Planning to overclock, add drives, or upgrade your GPU in the next year?
+          Sizing up one tier now is cheaper than buying a second PSU.
         </p>
       </div>
 
-    </main>
+    </div><!-- /layout-main -->
 
-    <!-- ── Right column: sidebar ── -->
-    <aside class="sidebar">
+    <!-- ── Right column: result + sidebar (sticky on desktop) ── -->
+    <div class="layout-side">
 
-      <!-- ─── Ad: Sidebar ─────────────────────────────────────────────────── -->
-      <!--
-        ADSENSE AD UNIT — Sidebar (300×250 medium rectangle or 160×600 wide skyscraper)
+      <!-- Result card — hidden until first calculate() call -->
+      <div id="result-card" class="result-card hidden">
+        <div class="result-eyebrow">Recommended PSU</div>
+        <div class="result-wattage"><span id="recommended-wattage">—</span></div>
+        <div class="result-divider"></div>
+        <div class="result-stats">
+          <div class="stat">
+            <div class="stat-value" id="total-draw">—</div>
+            <div class="stat-label">System draw</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="draw-headroom">—</div>
+            <div class="stat-label">+20% headroom</div>
+          </div>
+          <div class="stat">
+            <div id="headroom-badge" class="headroom-badge headroom-good">
+              <span id="headroom-pct">—</span> headroom
+            </div>
+            <div class="stat-label">On chosen PSU</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Ad: Sidebar ───────────────────────────────────────────────────
+        ADSENSE AD UNIT — Sidebar (300×250 medium rectangle)
         Place your <ins class="adsbygoogle"> code inside this div.
-        This unit is only visible on desktop (≥900px) via the CSS grid layout.
+        Visible only on desktop (≥800px) via grid layout.
       -->
       <div class="ad-banner ad-sidebar" aria-hidden="true">
         <!-- AdSense sidebar ad unit — place your <ins class="adsbygoogle"> code here -->
@@ -244,52 +267,281 @@
       </div>
 
       <div class="sidebar-card">
-        <div class="tip-badge">Quick Tips</div>
         <h3>Choosing a PSU</h3>
         <ul>
-          <li>Always buy from a reputable brand (Seasonic, Corsair, EVGA, be quiet!, Fractal)</li>
-          <li>Aim for 80+ Gold efficiency or higher</li>
-          <li>Fully modular cables reduce clutter</li>
-          <li>Check connector count matches your GPU (RTX 4090 needs 16-pin or 3× 8-pin adapters)</li>
-          <li>ATX 3.0 PSUs handle GPU power spikes natively</li>
+          <li>Buy from reputable brands: Seasonic, Corsair, be quiet!, Fractal</li>
+          <li>80+ Gold or higher for any daily-use build</li>
+          <li>Fully modular cables help with airflow</li>
+          <li>RTX 40/50 series needs 16-pin or ATX 3.0 PSU</li>
+          <li>Check PSU length fits your case (SFX vs ATX)</li>
         </ul>
       </div>
 
       <div class="sidebar-card">
-        <div class="tip-badge">More Tools</div>
-        <h3>Coming soon</h3>
-        <ul>
-          <li>GPU Bottleneck Checker</li>
-          <li>RAM Speed Impact Calculator</li>
-          <li>PC Build Budget Planner</li>
-        </ul>
-      </div>
-
-      <div class="sidebar-card">
-        <h3>About this calculator</h3>
-        <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6;">
-          TDP values reflect manufacturers' rated maximum power draw (PL2 / peak board power).
-          Real-world draw may vary by ±10–15%. We recommend adding one PSU tier if you overclock.
+        <h3>About</h3>
+        <p>
+          TDP figures reflect manufacturers' peak power draw (Intel PL2, AMD TDP, Nvidia TGP).
+          Real-world draw varies ±10–15%.
         </p>
-        <p style="font-size:.85rem;color:var(--text-muted);margin-top:.5rem;">
-          <a href="/guides/">Read our full PSU guide →</a>
+        <p style="margin-top:6px;">
+          <a href="/guides/">Full PSU buying guide →</a>
         </p>
       </div>
 
-    </aside>
-  </div><!-- /content-grid -->
+    </div><!-- /layout-side -->
+
+  </div><!-- /layout -->
+
+  <!-- ─── Ad: Mid-page ─────────────────────────────────────────────────────── -->
+  <!--
+    ADSENSE AD UNIT — Below calculator (responsive)
+    Place your <ins class="adsbygoogle"> code inside this div.
+  -->
+  <div class="ad-banner ad-banner-mid" aria-hidden="true">
+    <!-- AdSense mid-page ad unit — place your <ins class="adsbygoogle"> code here -->
+    Advertisement
+  </div>
 
   <!-- ─── Footer ───────────────────────────────────────────────────────────── -->
-  <footer class="site-footer">
+  <footer class="footer">
     <span>© 2025 PSU Calc. For informational purposes only.</span>
-    <nav>
-      <a href="/">Calculator</a> &nbsp;·&nbsp;
-      <a href="/guides/">PSU Guide</a>
+    <nav class="nav">
+      <a href="/">Calculator</a>
+      <a href="/guides/">Guide</a>
     </nav>
   </footer>
 
-</div><!-- /site-wrapper -->
+</div><!-- /page -->
 
 <script src="/js/calculator.js"></script>
+
+<!-- ─── UI controller ─────────────────────────────────────────────────────────
+     Handles brand/series toggles and stepper components.
+     Runs after calculator.js has loaded and populated the select elements.
+     Does NOT modify any calculation logic.
+-->
+<script>
+(function () {
+  'use strict';
+
+  // ── Brand / series parsers ──────────────────────────────────────────────
+
+  function cpuBrand(text) {
+    if (text.startsWith('Intel')) return 'Intel';
+    if (text.startsWith('AMD'))   return 'AMD';
+    return 'Other';
+  }
+
+  function cpuSeries(text) {
+    if (text.includes('Core i9')) return 'Core i9';
+    if (text.includes('Core i7')) return 'Core i7';
+    if (text.includes('Core i5')) return 'Core i5';
+    if (text.includes('Core i3')) return 'Core i3';
+    if (text.includes('Ryzen 9')) return 'Ryzen 9';
+    if (text.includes('Ryzen 7')) return 'Ryzen 7';
+    if (text.includes('Ryzen 5')) return 'Ryzen 5';
+    return 'Other';
+  }
+
+  function gpuBrand(text) {
+    if (text.startsWith('NVIDIA')) return 'NVIDIA';
+    if (text.startsWith('AMD'))    return 'AMD';
+    return 'Integrated';
+  }
+
+  function gpuSeries(text) {
+    if (text.includes('RTX 50')) return 'RTX 50';
+    if (text.includes('RTX 40')) return 'RTX 40';
+    if (text.includes('RTX 30')) return 'RTX 30';
+    if (text.includes('RTX 20')) return 'RTX 20';
+    if (text.includes('GTX'))    return 'GTX';
+    if (text.includes('RX 7'))   return 'RX 7000';
+    if (text.includes('RX 6'))   return 'RX 6000';
+    if (text.includes('RX 5'))   return 'RX 5000';
+    return 'Other';
+  }
+
+  // ── Generic selector builder ────────────────────────────────────────────
+
+  function initSelector(prefix, brandFn, seriesFn) {
+    var sel    = document.getElementById(prefix + '-select');
+    var bRow   = document.getElementById(prefix + '-brand-row');
+    var sRow   = document.getElementById(prefix + '-series-row');
+    if (!sel || !bRow || !sRow) return;
+
+    // Parse all valid options into metadata objects
+    var items = Array.from(sel.options)
+      .filter(function (o) { return !!o.value; })
+      .map(function (o) {
+        return {
+          value:  o.value,
+          option: o,
+          brand:  brandFn(o.text),
+          series: seriesFn(o.text),
+        };
+      });
+
+    // Ordered unique brands (preserves JSON order)
+    var brands = [];
+    items.forEach(function (i) {
+      if (brands.indexOf(i.brand) === -1) brands.push(i.brand);
+    });
+
+    // Detect which brand/series matches the pre-selected value
+    var preselected = items.find(function (i) { return i.value === sel.value; }) || items[0];
+    var activeBrand  = preselected ? preselected.brand  : brands[0];
+    var activeSeries = preselected ? preselected.series : null;
+
+    // ── Build brand pills ─────────────────────────────────────────────────
+    bRow.innerHTML = '';
+    brands.forEach(function (brand) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pill-btn brand-btn' + (brand === activeBrand ? ' active' : '');
+      btn.textContent = brand;
+      btn.addEventListener('click', function () {
+        if (brand === activeBrand) return;
+        activeBrand  = brand;
+        activeSeries = null;
+        bRow.querySelectorAll('.brand-btn').forEach(function (b) {
+          b.classList.toggle('active', b.textContent === brand);
+        });
+        buildSeries();
+      });
+      bRow.appendChild(btn);
+    });
+
+    // ── Build series pills ────────────────────────────────────────────────
+    function buildSeries() {
+      var seriesList = [];
+      items.forEach(function (i) {
+        if (i.brand === activeBrand && seriesList.indexOf(i.series) === -1) {
+          seriesList.push(i.series);
+        }
+      });
+
+      // Only one series → skip pills, just filter models
+      if (seriesList.length <= 1) {
+        activeSeries = seriesList[0] || null;
+        sRow.innerHTML = '';
+        sRow.classList.add('hidden');
+        filterModels();
+        return;
+      }
+
+      sRow.innerHTML = '';
+      sRow.classList.remove('hidden');
+
+      // Keep activeSeries if it still exists in the new list, else reset
+      if (!activeSeries || seriesList.indexOf(activeSeries) === -1) {
+        activeSeries = seriesList[0];
+      }
+
+      seriesList.forEach(function (series) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pill-btn series-btn' + (series === activeSeries ? ' active' : '');
+        btn.textContent = series;
+        btn.addEventListener('click', function () {
+          if (series === activeSeries) return;
+          activeSeries = series;
+          sRow.querySelectorAll('.series-btn').forEach(function (b) {
+            b.classList.toggle('active', b.textContent === series);
+          });
+          filterModels();
+        });
+        sRow.appendChild(btn);
+      });
+
+      filterModels();
+    }
+
+    // ── Filter model select ───────────────────────────────────────────────
+    function filterModels() {
+      var firstVisible = null;
+      items.forEach(function (item) {
+        var vis = item.brand === activeBrand &&
+                  (activeSeries === null || item.series === activeSeries);
+        item.option.hidden = !vis;
+        if (vis && !firstVisible) firstVisible = item.value;
+      });
+
+      // If current selection is now hidden, jump to first visible
+      var curItem = items.find(function (i) { return i.value === sel.value; });
+      if (!curItem || curItem.option.hidden) {
+        if (firstVisible) {
+          sel.value = firstVisible;
+          sel.dispatchEvent(new Event('change'));
+        }
+      }
+    }
+
+    buildSeries();
+  }
+
+  // ── Stepper components ──────────────────────────────────────────────────
+
+  function initSteppers() {
+    document.querySelectorAll('.stepper').forEach(function (stepper) {
+      var inputId = stepper.dataset.input;
+      var input   = document.getElementById(inputId);
+      if (!input) return;
+
+      var display = stepper.querySelector('.stepper-val');
+      var minus   = stepper.querySelector('.stepper-minus');
+      var plus    = stepper.querySelector('.stepper-plus');
+      var min     = parseInt(input.getAttribute('min'), 10) || 0;
+      var max     = parseInt(input.getAttribute('max'), 10) || 99;
+
+      // Sync display with input's initial value
+      display.textContent = input.value;
+      minus.disabled = parseInt(input.value, 10) <= min;
+      plus.disabled  = parseInt(input.value, 10) >= max;
+
+      function step(delta) {
+        var current = parseInt(input.value, 10);
+        var next    = Math.max(min, Math.min(max, current + delta));
+        if (next === current) return;
+        input.value          = next;
+        display.textContent  = next;
+        minus.disabled       = next <= min;
+        plus.disabled        = next >= max;
+        // Trigger calculator.js listener
+        input.dispatchEvent(new Event('change'));
+      }
+
+      minus.addEventListener('click', function () { step(-1); });
+      plus.addEventListener('click',  function () { step(+1); });
+    });
+  }
+
+  // ── Boot — wait for calculator.js to populate the selects ──────────────
+
+  function boot() {
+    initSelector('cpu', cpuBrand, cpuSeries);
+    initSelector('gpu', gpuBrand, gpuSeries);
+    initSteppers();
+  }
+
+  var cpuSel = document.getElementById('cpu-select');
+  if (!cpuSel) return;
+
+  if (cpuSel.options.length > 1) {
+    // Data already loaded (unlikely on first run but handles edge cases)
+    boot();
+  } else {
+    // Watch for calculator.js to add options
+    var obs = new MutationObserver(function () {
+      if (cpuSel.options.length > 1) {
+        obs.disconnect();
+        boot();
+      }
+    });
+    obs.observe(cpuSel, { childList: true });
+  }
+
+}());
+</script>
+
 </body>
 </html>
